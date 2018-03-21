@@ -1,0 +1,27 @@
+language: csharp
+dist: trusty
+sudo: false
+
+env:
+  global:
+    - Z3URL=https://github.com/Z3Prover/z3/releases/download/z3-4.5.0/z3-4.5.0-x64-ubuntu-14.04.zip
+
+install:
+  # Download Z3
+  - wget -nv $Z3URL -O z3.zip
+  - unzip z3.zip
+  - mv z3-* Binaries/z3
+  # Install python stuff
+  - pip install --user lit OutputCheck
+  # Install Boogie
+  - git clone https://github.com/boogie-org/boogie.git ../boogie
+  - nuget restore ../boogie/Source/Boogie.sln
+  - msbuild ../boogie/Source/Boogie.sln
+  # Restore
+  - nuget restore Source/Dafny.sln
+
+script:
+  # Build
+  - msbuild Source/Dafny.sln
+  # Test
+  - lit Test
