@@ -1,0 +1,25 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: mono
+    steps:
+      - checkout
+      # Download Z3
+      - run: wget -nv https://github.com/Z3Prover/z3/releases/download/z3-4.5.0/z3-4.5.0-x64-ubuntu-14.04.zip -O z3.zip
+      - run: unzip z3.zip
+      - run: mv z3-* Binaries/z3
+      # Install python stuff
+      - run: pip install --user lit OutputCheck
+      # Install Boogie
+      - run: git clone https://github.com/boogie-org/boogie.git ../boogie
+      - run: nuget restore ../boogie/Source/Boogie.sln
+      - run: msbuild ../boogie/Source/Boogie.sln
+      # Restore
+      - run: nuget restore Source/Dafny.sln
+      # Build
+      - run: msbuild Source/Dafny.sln
+      # Test
+      - run: mono Binaries/Dafny.exe Test/dafny4/Bug89.dfy
+      - run: lit Test
