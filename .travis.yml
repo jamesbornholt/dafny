@@ -25,4 +25,4 @@ script:
   - msbuild Source/Dafny.sln
   # Test
   - mono Binaries/Dafny.exe Test/dafny4/Bug89.dfy
-  - lit Test
+  - lit -v -vv --max-failures 1 Test
