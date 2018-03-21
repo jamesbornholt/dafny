@@ -24,4 +24,5 @@ script:
   # Build
   - msbuild Source/Dafny.sln
   # Test
+  - mono Binaries/Dafny.exe Test/dafny4/Bug89.dfy
   - lit Test
